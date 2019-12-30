@@ -1,0 +1,6 @@
+.cache
+dist/**
+!dist/.keep
+docker/volumes
+*.env
+!*.example.env

@@ -1,0 +1,46 @@
+version: "3.6"
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: dev
+    container_name: "${PROJECT_NAME}_app"
+    depends_on:
+      - db
+    env_file: ../.env
+    image: "$PROJECT_NAME"
+    networks:
+      - app-network
+    volumes:
+      - ../:/home/app
+    working_dir: /home/app
+
+  nginx:
+    container_name: "${PROJECT_NAME}_nginx"
+    depends_on:
+      - app
+    image: nginx
+    networks:
+      - app-network
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d
+    ports:
+      - 80:80
+      - 443:443
+
+  db:
+    container_name: "${PROJECT_NAME}_db"
+    environment:
+      POSTGRES_PASSWORD: pass
+    image: postgres:9.6-alpine
+    networks:
+      - app-network
+    restart: always
+    volumes:
+      - ${PWD}/docker/volumes/postgres:/var/lib/postgresql/data
+
+networks:
+  app-network:
+    driver: bridge
