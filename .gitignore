@@ -3,3 +3,6 @@ dist/**
 !dist/.keep
 docker/volumes
 *.env
+configs.yml
+*.log
+*.error

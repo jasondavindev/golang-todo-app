@@ -3,14 +3,15 @@ package common
 import (
 	"os"
 
+	"github.com/jasondavindev/golang-todo-app/src/configs"
 	"github.com/jinzhu/gorm"
 )
 
-var DB *gorm.DB
+var instance *gorm.DB
 
 func InitDB() *gorm.DB {
-	dbDriver := os.Getenv("DATABASE_DRIVER")
-	dbURL := os.Getenv("DATABASE_URL")
+	dbDriver := configs.GetConfig().Database.Driver
+	dbURL := configs.GetConfig().Database.URL
 	db, err := gorm.Open(dbDriver, dbURL)
 
 	if err != nil {
@@ -18,15 +19,15 @@ func InitDB() *gorm.DB {
 	}
 
 	db.DB().SetMaxIdleConns(10)
-	DB = db
+	instance = db
 
 	if os.Getenv("GOENV") == "development" {
-		DB = DB.Debug()
+		instance = instance.Debug()
 	}
 
-	return DB
+	return instance
 }
 
 func GetDB() *gorm.DB {
-	return DB
+	return instance
 }

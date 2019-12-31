@@ -8,5 +8,10 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/gosimple/slug v1.9.0
 	github.com/jinzhu/gorm v1.9.11
-	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c
+	go.uber.org/atomic v1.5.1 // indirect
+	go.uber.org/config v1.4.0
+	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
+	golang.org/x/lint v0.0.0-20191125180803-fdd1cda4f05f // indirect
+	golang.org/x/tools v0.0.0-20191230220329-2aa90c603ae3 // indirect
+	gopkg.in/yaml.v2 v2.2.7 // indirect
 )

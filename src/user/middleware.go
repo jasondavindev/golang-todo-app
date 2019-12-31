@@ -1,12 +1,12 @@
 package user
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
 
-import "net/http"
-
-import "github.com/dgrijalva/jwt-go"
-
-import "github.com/jasondavindev/golang-todo-app/src/common"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"github.com/jasondavindev/golang-todo-app/src/configs"
+)
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -24,7 +24,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		claims := &Claims{}
 
 		token, err := jwt.ParseWithClaims(cookie, claims, func(token *jwt.Token) (interface{}, error) {
-			return common.GetJwtKey(), nil
+			return []byte(configs.GetConfig().JWT.SecretKey), nil
 		})
 
 		if err != nil || !token.Valid {

@@ -1,0 +1,5 @@
+database:
+  driver: postgres
+  url: postgres://user:password@host:port/dbname?sslmode=disable
+jwt:
+  secretkey: supersecret

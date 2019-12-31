@@ -7,6 +7,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/jasondavindev/golang-todo-app/src/common"
+	"github.com/jasondavindev/golang-todo-app/src/configs"
 )
 
 func UserRegister(r *gin.RouterGroup) {
@@ -76,7 +77,7 @@ func UserLogin(c *gin.Context) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(common.GetJwtKey())
+	tokenString, err := token.SignedString([]byte(configs.GetConfig().JWT.SecretKey))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
