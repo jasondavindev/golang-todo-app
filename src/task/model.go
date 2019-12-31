@@ -17,14 +17,6 @@ type Task struct {
 	UUID        string `json:"uuid" gorm:"unique"`
 }
 
-type TaskRetrieve struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Slug        string `json:"slug"`
-	Done        bool   `json:"done"`
-	UUID        string `json:"uuid"`
-}
-
 func AutoMigrate() {
 	db := common.GetDB()
 	db.AutoMigrate(&Task{})

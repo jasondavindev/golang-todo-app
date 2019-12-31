@@ -13,19 +13,19 @@ func TaskRegister(r *gin.RouterGroup) {
 }
 
 func TaskCreation(c *gin.Context) {
-	var task Task
+	taskValidator := NewTaskValidator()
 
-	if err := c.ShouldBind(&task); err != nil {
+	if err := taskValidator.Bind(c); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := (&task).Save(); err != nil {
+	if err := taskValidator.TaskModel.Save(); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"task": task})
+	c.JSON(http.StatusOK, gin.H{"task": taskValidator.TaskModel.Response()})
 }
 
 func Retrieve(c *gin.Context) {

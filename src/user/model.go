@@ -43,11 +43,11 @@ func (user *User) Update(data User) error {
 	return common.GetDB().Model(user).Update(data).Error
 }
 
-func (user *User) GetTasks() []task.TaskRetrieve {
+func (user *User) GetTasks() []task.TaskResponse {
 	db := common.GetDB()
-	var tasks []task.TaskRetrieve
-	db.Find(&[]task.Task{}, &task.Task{UserID: user.ID}).Scan(&tasks)
-	return tasks
+	var tasks []task.Task
+	db.Find(&tasks, &task.Task{UserID: user.ID})
+	return task.Map(tasks)
 }
 
 func (user *User) BeforeSave() {
