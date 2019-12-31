@@ -8,10 +8,11 @@ import (
 
 func UserRegister(r *gin.RouterGroup) {
 	r.POST("/", UserRegistration)
-	r.GET("/:name", UserRetrieve)
+	r.GET("/:name/tasks", UserTasks)
+	r.GET("/:name", UserFind)
 }
 
-func UserRetrieve(c *gin.Context) {
+func UserFind(c *gin.Context) {
 	userSearch := c.Param("name")
 
 	user, err := FindOne(&User{Name: userSearch})
@@ -32,15 +33,23 @@ func UserRegistration(c *gin.Context) {
 		return
 	}
 
-	if err := user.setPassword(user.Password); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err := Save(&user); err != nil {
+	if err := (&user).Save(); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"user": user})
+}
+
+func UserTasks(c *gin.Context) {
+	name := c.Param("name")
+	user, err := FindOne(&User{Name: name})
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	tasks := user.GetTasks()
+	c.JSON(http.StatusOK, gin.H{"tasks": tasks})
 }

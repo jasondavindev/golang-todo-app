@@ -33,24 +33,30 @@ func FindAll(cond ...interface{}) ([]User, error) {
 	return users, err
 }
 
-func Save(user *User) error {
+func (user *User) Save() error {
 	err := common.GetDB().Save(user).Error
 	return err
 }
 
-func (user *User) tasks() []task.Task {
+func (user *User) GetTasks() []task.TaskRetrieve {
 	db := common.GetDB()
-	var tasks []task.Task
-	db.Model(&user).Related(&tasks)
+	var tasks []task.TaskRetrieve
+	db.Find(&[]task.Task{}, &task.Task{UserID: user.ID}).Scan(&tasks)
 	return tasks
 }
 
-func (user *User) setPassword(password string) error {
-	if len(password) == 0 {
+func (user *User) BeforeSave() {
+	if err := user.setPassword(); err != nil {
+		panic(err.Error())
+	}
+}
+
+func (user *User) setPassword() error {
+	if len(user.Password) == 0 {
 		return errors.New("password should not be empty")
 	}
 
-	bytePassword := []byte(password)
+	bytePassword := []byte(user.Password)
 	passwordHash, _ := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
 	user.Password = string(passwordHash)
 	return nil
