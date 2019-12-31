@@ -22,23 +22,23 @@ func UserFind(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"user": user})
+	c.JSON(http.StatusOK, gin.H{"user": user.Response()})
 }
 
 func UserRegistration(c *gin.Context) {
-	var user User
+	userValidator := NewUserValidator()
 
-	if err := c.ShouldBind(&user); err != nil {
+	if err := userValidator.Bind(c); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := (&user).Save(); err != nil {
+	if err := userValidator.UserModel.Save(); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"user": user})
+	c.JSON(http.StatusOK, gin.H{"user": userValidator.UserModel.Response()})
 }
 
 func UserTasks(c *gin.Context) {

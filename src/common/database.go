@@ -9,8 +9,9 @@ import (
 var DB *gorm.DB
 
 func Init() *gorm.DB {
+	dbDriver := os.Getenv("DATABASE_DRIVER")
 	dbURL := os.Getenv("DATABASE_URL")
-	db, err := gorm.Open("postgres", dbURL)
+	db, err := gorm.Open(dbDriver, dbURL)
 
 	if err != nil {
 		panic(err)

@@ -12,7 +12,8 @@ import (
 type User struct {
 	gorm.Model
 	Name     string      `json:"name" gorm:"unique_index;not null"`
-	Password string      `json:"password"`
+	Password string      `json:"password" gorm:"not null"`
+	Email    string      `json:"email" gorm:"unique,not null"`
 	Tasks    []task.Task `json:"-"`
 }
 
@@ -36,6 +37,10 @@ func FindAll(cond ...interface{}) ([]User, error) {
 func (user *User) Save() error {
 	err := common.GetDB().Save(user).Error
 	return err
+}
+
+func (user *User) Update(data User) error {
+	return common.GetDB().Model(user).Update(data).Error
 }
 
 func (user *User) GetTasks() []task.TaskRetrieve {
