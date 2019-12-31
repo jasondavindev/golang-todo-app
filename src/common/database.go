@@ -8,7 +8,7 @@ import (
 
 var DB *gorm.DB
 
-func Init() *gorm.DB {
+func InitDB() *gorm.DB {
 	dbDriver := os.Getenv("DATABASE_DRIVER")
 	dbURL := os.Getenv("DATABASE_URL")
 	db, err := gorm.Open(dbDriver, dbURL)
@@ -19,6 +19,11 @@ func Init() *gorm.DB {
 
 	db.DB().SetMaxIdleConns(10)
 	DB = db
+
+	if os.Getenv("GOENV") == "development" {
+		DB = DB.Debug()
+	}
+
 	return DB
 }
 

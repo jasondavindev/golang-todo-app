@@ -9,7 +9,8 @@ import (
 )
 
 func main() {
-	db := common.Init()
+	common.InitConfig()
+	db := common.InitDB()
 	Migrate()
 	defer db.Close()
 

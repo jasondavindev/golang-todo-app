@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/jasondavindev/golang-todo-app/src/common"
 	"github.com/jasondavindev/golang-todo-app/src/task"
 	"github.com/jinzhu/gorm"
@@ -15,6 +16,11 @@ type User struct {
 	Password string      `json:"password" gorm:"not null"`
 	Email    string      `json:"email" gorm:"unique,not null"`
 	Tasks    []task.Task `json:"-"`
+}
+
+type Claims struct {
+	Email string `json:"email"`
+	jwt.StandardClaims
 }
 
 func AutoMigrate() {
@@ -62,7 +68,18 @@ func (user *User) setPassword() error {
 	}
 
 	bytePassword := []byte(user.Password)
-	passwordHash, _ := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
+	passwordHash, err := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
+
+	if err != nil {
+		return err
+	}
+
 	user.Password = string(passwordHash)
 	return nil
+}
+
+func (user *User) checkPassword(password string) error {
+	bytePassword := []byte(password)
+	byteHashedPassword := []byte(user.Password)
+	return bcrypt.CompareHashAndPassword(byteHashedPassword, bytePassword)
 }
